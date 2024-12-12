@@ -77,7 +77,7 @@ The cumulative fraction curve tool allows researchers to visualize the distribut
 How to Use the Code
 	•	Clone or download this repository:
 
-git clone https://github.com/your-username/CLASHub.git
+git clone https://github.com/Lu-up1/CLASHub/
 
 Outputs
 	•	A detailed HTML report summarizing results.
