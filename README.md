@@ -79,10 +79,6 @@ How to Use the Code
 
 git clone https://github.com/your-username/CLASHub.git
 
-
-	•	Run the CLASHub.py script in your Python environment.
-	•	Input required files (paired-end FASTQ or single-end FASTA) and follow the analysis pipeline.
-
 Outputs
 	•	A detailed HTML report summarizing results.
 	•	A comprehensive table containing miRNA-target interaction details, binding site classification, and quantification results.
@@ -102,6 +98,3 @@ For questions or feedback, please contact:
 Lu Li
 luli1@ufl.edu
 
-小结
-
-这个 README.md 重点介绍了你的项目、脚本功能、使用方法、输出结果和数据来源。它结构清晰，易于阅读，非常适合作为 GitHub 项目的说明文件。
