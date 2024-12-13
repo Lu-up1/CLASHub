@@ -15,88 +15,141 @@
 
 ## Features
 
-1. CLASH Analysis Pipeline (CLASHub.py)
+### 1. CLASH Analysis Pipeline (`CLASHub.py`)
 
-The core script CLASHub.py processes and analyzes CLASH data through the following steps:
+The CLASH analysis module processes and identifies miRNA-target interactions using the following workflow:
 
-Step 1: Data Upload and Input
-	•	Input Formats: Paired-end FASTQ files or single-end FASTA files.
-	•	Minimal user-provided information:
-	•	Adapter sequences (5’ and 3’)
-	•	Target species
-	•	Output file name
-	•	Email address for notifications
+#### **Step 1: Data Upload and Input**
+- Input formats: **Paired-end FASTQ** files or **Cleaned single-end FASTA** files.
+- Required inputs:
+  - Adapter sequences (5′ and 3′)
+  - Target species (e.g., *Homo sapiens*, *Mus musculus*, *Drosophila melanogaster*, *Caenorhabditis elegans*)
+  - Output file name
+  - Email address for result delivery
 
-Step 2: Data Preprocessing
-	•	Adapter Trimming: Removed using cutadapt (v2.10) (Martin, 2011).
-	•	Read Merging: Performed with PEAR (v0.9.6) (Zhang et al., 2014).
-	•	Redundancy Collapse: Redundant reads are collapsed using fastx_collapser.
-	•	UMI Trimming: Unique Molecular Identifiers are trimmed to produce clean data.
+#### **Step 2: Data Preprocessing**
+- **Adapter Trimming**: Performed using `Cutadapt (v2.10)` to remove adapter sequences.
+- **Read Merging**: Paired-end reads are merged using `PEAR (v0.9.6)`.
+- **Redundancy Collapse**: Identical sequences are collapsed using `fastx_collapser (v0.0.14)`.
+- **UMI Trimming**: Removes unique molecular identifiers (UMIs) to clean up the data.
 
+#### **Step 3: Hybrid Identification**
+- Reads are aligned to reference transcripts using `hyb` and `bowtie2 (v2.5.3)`.
+- Reference databases include:
+  - Ensembl genome assemblies: GRCh38, GRCm39, BDGP6, WBcel235
+  - Mature miRNAs from `miRBase (Release 22.1)`
+- Binding stability (ΔG) is evaluated using `UNAfold (v3.8)`.
 
-Step 3: Hybrid Identification
-	•	Reads are aligned to reference transcripts using hyb (Travis et al., 2014) and bowtie2 (v2.5.3).
-	•	Reference databases include Ensembl genome assemblies (Harrison et al., 2024) and mature miRNAs from miRBase (Release 22.1).
-	•	Binding stability (free energy, ΔG) is assessed using UNAfold (v3.8) (Markham and Zuker, 2008).
+#### **Step 4: Conservation Score Calculation**
+- Conservation scores are computed using the custom script `CLASHub.py` (available on GitHub: [CLASHub GitHub](https://github.com/Lu-up1)).
+- Scores are derived from UCSC phyloP tracks:
+  - *Homo sapiens*: `g38.phyloP100way`
+  - *Mus musculus*: `mm39.phyloP35way`
+  - *Drosophila melanogaster*: `dm6.phyloP124way`
+  - *Caenorhabditis elegans*: `ce11.phyloP135way`
 
-Step 4: Conservation Score Calculation
-	•	At this step, the CLASHub.py script is utilized to calculate the conservation socre of specific miRNA binding sites within target genes. The conservation scores are derived from UCSC phyloP tracks.
-	•	Conservation is assessed using UCSC phyloP tracks (Perez et al., 2024):
-	•	Human: g38.phyloP100way
-	•	Mouse: mm39.phyloP35way
-	•	Drosophila: dm6.phyloP124way
-	•	C. elegans: ce11.phyloP135way
+#### **Step 5: Hybrid Quantification and Site Classification**
+- Hybrids are classified into binding site types: **8mer, 7mer, 6mer**, and **non-seed matches**.
+- Quantification results include miRNA-target abundance.
 
-Step 5: Hybrid Quantification and Site Type Analysis
-	•	The CLASHub.py script integrates the processed results to quantify identified miRNA-target hybrids.
-	•	Hybrids are classified into site types: Offset 6mer, 6mer, 7mer-A1, 7mer-m8, and 8mer.
-	•	Results are summarized into a comprehensive table for downstream analysis.
+#### **Step 6: Output Results**
+The analysis generates:
+- **Detailed Table**:
+  - miRNA name, target pairing pattern, gene name/ID, conservation score, free energy, gene type, genomic position, and binding site type.
+  - Normalized hybrid abundances across conditions.
+- **Summary HTML Report**:
+  - Provides key metrics like processed reads, mapped reads, and identified hybrids.
 
-Step 6: Output Results
+---
 
-The CLASHub.py script produces the final output in the form of a detailed table and HTML report. The output includes:
-	•	6.1 miRNA Name (from miRBase)
-	•	6.2 Pairing Pattern (miRNA sequence, target sequence, and base pairing relationships)
-	•	6.3 Gene Name (from Ensembl)
-	•	6.4 Gene ID (from Ensembl)
-	•	6.5 Conservation Score (calculated using UCSC phyloP tracks)
-	•	6.6 Free Energy (ΔG via UNAfold)
-	•	6.7 Gene Type (e.g., mRNA, lncRNA)
-	•	6.8 Element Region (e.g., CDS, 5’UTR, or 3’UTR)
-	•	6.9 Genomic Position
-	•	6.10 Binding Site Type (e.g., 8mer, 7mer, or non-seed match)
-	•	6.11 Number of Datasets with Hybrid Occurrence (wild-type, control, ZSWIM8 knockout)
-	•	6.12 Normalized Hybrid Abundance (quantified across wild-type, control, and ZSWIM8 knockout datasets).
+### 2. AQ-miRNA-seq Analysis: miRNA Quantification and Isoform Profiling
 
-2. MicroRNA Expression Analysis
+The AQ-miRNA-seq module processes miRNA sequencing data to quantify total miRNA expression and isoform-specific abundances.
 
-CLASHub can calculate miRNA expression levels across different samples, enabling insights into miRNA abundance in wild-type, control, and knockout datasets.
+#### **Step 1: Data Upload and Input**
+- Input formats:
+  - **Paired-End FASTQ** (.gz) files (requires 5′ and 3′ adapter sequences).
+  - **Single-End FASTQ** (.gz) files (requires only 3′ adapter sequences).
+  - **Cleaned Single-End FASTA** (.gz) files (no adapter trimming required).
+- Additional inputs: target species, output file name, and email address.
 
-3. Cumulative Fraction Curve Analysis
+#### **Step 2: Data Preprocessing**
+- **Adapter Trimming**: Uses `Cutadapt (v2.10)` for paired-end and single-end data.
+- **Read Merging**: Paired-end reads are merged using `PEAR (v0.9.6)`.
+- **Redundancy Collapse**: Removes PCR duplicates with `fastx_collapser`.
+- **UMI Trimming**: Cleans up UMIs for FASTQ data.
 
-The cumulative fraction curve tool allows researchers to visualize the distribution of miRNA binding and its effects on target gene regulation.
+#### **Step 3: miRNA Identification and Quantification**
+- miRNA reads are matched to mature miRNA sequences from `miRBase (Release 22.1)`.
+- Expression levels are calculated for:
+  - **Total miRNA counts**.
+  - **Isoform abundances**, including 3′ end variations.
 
-How to Use the Code
-	•	Clone or download this repository:
+#### **Step 4: Output Results**
+- **Total miRNA Expression Table**: Quantifies miRNA expression levels.
+- **Isoform Table**: Details sequence-specific isoform abundances.
+- **Summary HTML Report**: Includes metrics on input reads, processed reads, and miRNA mapping rates.
 
+---
+
+### 3. RNA-seq Analysis: Gene Expression and Differential Expression
+
+The RNA-seq module calculates gene expression levels and identifies differentially expressed genes.
+
+#### **Step 1: Data Upload and Input**
+- Input format: **Paired-end FASTQ (.gz)** files.
+- Required inputs: adapter sequences, target species, output file name, and email address.
+
+#### **Step 2: Data Preprocessing**
+- **Adapter Trimming**: Performed using `Cutadapt (v2.10)`.
+- **Genome Mapping**: Reads are aligned to reference genomes with `HISAT2 (v2.2.1)`:
+  - *Homo sapiens*: GRCh38
+  - *Mus musculus*: GRCm39
+  - *Drosophila melanogaster*: BDGP6
+  - *Caenorhabditis elegans*: WBcel235
+
+#### **Step 3: Gene Expression Quantification**
+- Gene expression levels are quantified using `StringTie (v2.2.1)` to produce **TPM**-normalized values.
+
+#### **Step 4: Differential Gene Expression Analysis**
+- Raw counts are generated with `prepDE.py3` and analyzed with `DESeq2 (v1.44)` to detect significant fold changes between conditions.
+
+#### **Step 5: Output Results**
+- **TPM Table**: Normalized gene expression values.
+- **Raw Count Table**: Unprocessed gene-level counts.
+- **DESeq2 Results Table**: Includes log2 fold changes, adjusted p-values, and base mean values.
+- **Summary HTML Report**: Metrics on reads, trimming, mapping, and expression results.
+
+---
+
+### 4. Cumulative Fraction Curve Analysis: Functional Validation of miRNA Targets
+
+The cumulative fraction curve module evaluates the regulatory effects of miRNAs by comparing fold change distributions between miRNA targets and non-target genes.
+
+#### **Step 1: Data Upload and Input**
+- Input: **Differential gene expression CSV** with columns:
+  - `GeneName`, `BaseMean`, `log2FoldChange`
+- Additional inputs: target species, miRNA name, output file name, and email address.
+
+#### **Step 2: Target Identification**
+- **CLASH-Derived Targets**:
+  - Conserved targets (high-confidence with phyloP > 0) and all targets.
+- **TargetScan-Derived Targets**:
+  - Targets downloaded from the `Summary_Counts.txt` file (conserved and non-conserved).
+
+#### **Step 3: Cumulative Fraction Curve Generation**
+- Compares fold change distributions of target genes versus non-targets.
+- Genes with low expression (BaseMean < threshold) are excluded.
+
+#### **Step 4: Output Results**
+- **Cumulative Fraction Curves**: Visualize regulatory trends of miRNA targets.
+- **Summary Report**: Key statistics on filtered genes and target classifications.
+
+---
+
+## How to Use the Code
+
+Clone the repository and run the desired analysis pipeline:
+
+```bash
 git clone https://github.com/Lu-up1/CLASHub/
-
-Outputs
-	•	A detailed HTML report summarizing results.
-	•	A comprehensive table containing miRNA-target interaction details, binding site classification, and quantification results.
-
-License
-
-This project is open and free to use under the MIT License.
-
-Acknowledgments
-	•	Developed as part of the CLASH Hub Project at the University of Florida.
-	•	Data resources: Ensembl, miRBase, and UCSC Genome Browser.
-	•	Tools used: cutadapt, PEAR, bowtie2, UNAfold, and phyloP tracks.
-
-Contact
-
-For questions or feedback, please contact:
-Lu Li
-luli1@ufl.edu
-
