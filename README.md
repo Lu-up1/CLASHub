@@ -41,7 +41,7 @@ The CLASH analysis module processes and identifies miRNA-target interactions usi
 - Binding stability (ΔG) is evaluated using `UNAfold (v3.8)`.
 
 #### **Step 4: Conservation Score Calculation**
-- Conservation scores are computed using the custom script `CLASHub.py` (available on GitHub: [CLASHub GitHub](https://github.com/Lu-up1)).
+- Conservation scores are computed using the custom script `CLASHub.py`.
 - Scores are derived from UCSC phyloP tracks:
   - *Homo sapiens*: `g38.phyloP100way`
   - *Mus musculus*: `mm39.phyloP35way`
