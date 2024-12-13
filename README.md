@@ -9,7 +9,7 @@
 - **Purpose**: CLASHub enables the identification and analysis of miRNA-target interactions and expression profiles using sequencing data.
 - **Data Supported**:
   - **Model Organisms**: *Homo sapiens*, *Mus musculus*, *Drosophila melanogaster*, *Caenorhabditis elegans*
-  - **Data Types**: CLASH datasets, miRNA-seq, RNA-seq, and differential expression results.
+  - **Data Types**: CLASH datasets, AQ-miRNA-seq, RNA-seq, and Cumulative fraction curve.
 
 ---
 
