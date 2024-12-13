@@ -1,17 +1,19 @@
-CLASHub 1.0: Comprehensive miRNA-Target Interaction Analysis Platform
+# CLASHub 1.0: Comprehensive miRNA-Target Interaction and Expression Analysis Platform
 
-CLASHub 1.0 is a comprehensive and user-friendly platform for analyzing CLASH (Cross-Linking, Ligation, and Sequencing of Hybrids) data. It combines a rich database with advanced tools for data analysis, facilitating the exploration of miRNA-target interactions and their regulatory roles across multiple organisms.
+**CLASHub 1.0** is a user-friendly and powerful platform designed to analyze CLASH (Cross-Linking, Ligation, and Sequencing of Hybrids) data and miRNA expression data. It facilitates comprehensive insights into miRNA-target interactions, miRNA expression dynamics, and their regulatory roles across multiple organisms.
 
-Project Overview
-	•	Purpose: CLASHub reveals microRNA (miRNA)–target interactions by utilizing UV cross-linking to covalently bind miRNAs and their target RNAs within the Argonaute protein complex.
-	•	Data: The database includes data for four model organisms:
-	•	Human (Homo sapiens)
-	•	Mouse (Mus musculus)
-	•	Drosophila melanogaster
-	•	Caenorhabditis elegans
-	•	Samples: Data include wild-type, non-targeting sgRNA controls, and ZSWIM8 knockout samples, providing insights into Target-Directed miRNA Degradation (TDMD).
+---
 
-Features
+## Project Overview
+
+- **Purpose**: CLASHub enables the identification and analysis of miRNA-target interactions and expression profiles using sequencing data.
+- **Data Supported**:
+  - **Model Organisms**: *Homo sapiens*, *Mus musculus*, *Drosophila melanogaster*, *Caenorhabditis elegans*
+  - **Data Types**: CLASH datasets, miRNA-seq, RNA-seq, and differential expression results.
+
+---
+
+## Features
 
 1. CLASH Analysis Pipeline (CLASHub.py)
 
